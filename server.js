@@ -1,3 +1,4 @@
+// Import modules
 const http = require('http'),
         url = require('url'),
         fs = require('fs');
@@ -23,15 +24,17 @@ http.createServer((request, response) => {
         filePath = 'index.html';
     }
 
+    // Serve the file that was requested
     fs.readFile(filePath, (err, data) => {
         if (err) {
             throw err;
         }
-
         response.writeHead(200, { 'Content-Type': 'text/html'});
         response.write(data);
         response.end();
     });
+
 }).listen(8080);
 
+// Just to make sure :)
 console.log('My Node test server is running on port 8080.');

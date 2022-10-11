@@ -18,11 +18,20 @@ http.createServer((request, response) => {
     // Checks whether request pathnames includes the word 'documentation'. If it does, it returns the documentation page, otherwise it returns the home page.
     let filePath = '';
     if (q.pathname.includes('documentation')) {
-        filePath = (_dirname + '/documentation.html');
+        filePath = (__dirname + '/documentation.html');
     } else {
         filePath = 'index.html';
     }
 
+    fs.readFile(filePath, (err, data) => {
+        if (err) {
+            throw err;
+        }
+
+        response.writeHead(200, { 'Content-Type': 'text/html'});
+        response.write(data);
+        response.end();
+    });
 }).listen(8080);
 
 console.log('My Node test server is running on port 8080.');

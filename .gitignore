@@ -1,0 +1,3 @@
+# To remove previously tracked file from git while keeping it in the repository: git update-index --skip-worktree example-file.txt
+node_modules
+log.txt

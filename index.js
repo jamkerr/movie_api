@@ -2,8 +2,6 @@ const express = require('express'),
     morgan = require('morgan');
 const app = express();
 
-app.use(morgan('common'));
-
 let topTenMovies = [
     {
         title: 'The Adventures of Priscilla, Queen of the Desert',
@@ -46,6 +44,8 @@ let topTenMovies = [
         director: 'Peter Weir'
     }
 ];
+
+app.use(morgan('common'));
 
 app.use(express.static('public'));
 

@@ -7,7 +7,178 @@
     <title>Documentation - YMDB API</title>
 </head>
 <body>
-    <h1>YMDB - Your Movie Database</h1>
-    <p>Search through movies and save your favourites.</p>
+    <h1>YMDB API - Your Movie Database API</h1>
+    <p>With YMDB you can search through movies and save your favourites. This REST API lets you interface with this app as a web service.</p>
+
+<!-- h1{Endpoints}+(table>tr*10>td{$ row}*7) -->
+
+<h1>Endpoints</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Descritpion</th>
+        <th>Method</th>
+        <th>URL</th>
+        <th>Parameters</th>
+        <th>Request Format</th>
+        <th>Response Format</th>
+    </tr>
+    <tr>
+        <td>All Movies</td>
+        <td>Return all movies.</td>
+        <td>GET</td>
+        <td>/movies</td>
+        <td>None</td>
+        <td>None</td>
+        <td>
+            Returns an array of objects.
+            <pre>
+                <code>
+[
+    {
+        "title": "The Adventures of Priscilla, Queen of the Desert",
+        "director": "Stephan Elliott"
+    },
+    {
+        "title": "Everything Everywhere All at Once",
+        "director": [
+            "Daniel Kwan",
+            "Daniel Scheinert"
+    ]
+    }
+]
+                </code>
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>One Movie</td>
+        <td>Return a movie by title.</td>
+        <td>GET</td>
+        <td>/movies/title</td>
+        <td><code>title</code></td>
+        <td>None</td>
+        <td>
+            Returns an object.
+            <pre>
+                <code>
+{
+"title": "The Truman Show",
+"director": "Peter Weir"
+}
+                </code>
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>Genre</td>
+        <td>Return data about a genre.</td>
+        <td>GET</td>
+        <td>/genre</td>
+        <td><code>genre</code></td>
+        <td>None</td>
+        <td>Returns a confirmation string.</td>
+    </tr>
+    <tr>
+        <td>Director</td>
+        <td>Return data about a director.</td>
+        <td>GET</td>
+        <td>/director</td>
+        <td><code>director</code></td>
+        <td>None</td>
+        <td>Returns a confirmation string.</td>
+    </tr>
+    <tr>
+        <td>Register</td>
+        <td>Allow a new user to register.</td>
+        <td>POST</td>
+        <td>/users</td>
+        <td>None</td>
+        <td>
+            Requires a JSON object with the key "username".
+            <pre>
+                <code>
+{
+"username":"Gregor"
+}
+                </code>
+            </pre>
+        </td>
+        <td>
+            Returns an object.
+            <pre>
+                <code>
+{
+"username": "Gregor",
+"favorites": []
+}
+                </code>
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <td>Update Username</td>
+        <td>Allow a user to update their username.</td>
+        <td>PUT</td>
+        <td>/users/username</td>
+        <td><code>username</code></td>
+        <td>
+            Reqires a JSON object with the key "newname".
+            <pre>
+                <code>
+{"newname":"Hortence"}
+                </code>
+            </pre>
+        </td>
+        <td>Returns a confirmation string.</td>
+    </tr>
+    <tr>
+        <td>Add Favorite Movie</td>
+        <td>Allow a user to add a movie to their favorites.</td>
+        <td>PUT</td>
+        <td>/users/username/favorites</td>
+        <td><code>username</code></td>
+        <td>
+            Requires a JSON object with the key "title".
+            <pre>
+                <code>
+{
+"title":"filmTitle",
+"director":"directorName"
+}
+                </code>
+            </pre>
+        </td>
+        <td>Returns a confirmation string.</td>
+    </tr>
+    <tr>
+        <td>Remove Favorite Movie</td>
+        <td>Allow a user to remove a movie from their favorites.</td>
+        <td>DELETE</td>
+        <td>/users/username/favorites</td>
+        <td><code>username</code></td>
+        <td>
+            Requires a JSON object with the key "title".
+            <pre>
+                <code>
+{
+"title":"filmTitle",
+"director":"directorName"
+}
+                </code>
+            </pre>
+        </td>
+        <td>Returns a confirmation string.</td>
+    </tr>
+    <tr>
+        <td>Delete Account</td>
+        <td>Allow a user to delete their account.</td>
+        <td>DELETE</td>
+        <td>/users/username</td>
+        <td><code>username</code></td>
+        <td>None</td>
+        <td>Returns a confirmation string.</td>
+    </tr>
+</table>
 </body>
 </html>

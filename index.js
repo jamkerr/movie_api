@@ -132,7 +132,8 @@ app.put('/users/:username/favorites', (req, res) => {
         let isFavorite = user.favorites.find((favorite) => { return favorite.title === newFavorite.title});
         if (!isFavorite) {
             user.favorites.push(newFavorite);
-            res.status(201).send(`You added ${newFavorite.title} as a favorite.`);
+            // res.status(201).send(`You added ${newFavorite.title} as a favorite.`);
+            res.status(201).send(users);
         } else {
         res.status(404).send(`You already have ${newFavorite.title} as a favorite.`);
         }
@@ -150,12 +151,12 @@ app.delete('/users/:username/favorites', (req, res) => {
 
     // If user exists and they have the film as a favorite
     if (user) {
-        let isFavorite = user.favorites.find((favorite) => { return favorite.title === notFavoriteAnymore.title });
+        let isFavorite = user.favorites.find((favorite) => { return favorite.title === notFavoriteAnymore });
         if (isFavorite) {
-            user.favorites.delete(notFavoriteAnymore);
-            res.status(201).send(`You removed ${notFavoriteAnymore.title} as a favorite.`);
+            user.favorites = user.favorites.filter((obj) => { return obj.title !== notFavoriteAnymore });
+            res.status(201).send(`You removed ${notFavoriteAnymore} as a favorite.`);
         } else {
-            res.status(404).send(`You don't have ${notFavoriteAnymore.title} as a favorite.`);
+            res.status(404).send(`You don't have ${notFavoriteAnymore} as a favorite.`);
         }
     } else {
         res.status(404).send(`We couldn\'t find a user with the username ${req.params.username}`);

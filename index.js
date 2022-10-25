@@ -154,7 +154,7 @@ app.delete('/users/:username/favorites', (req, res) => {
         let isFavorite = user.favorites.find((favorite) => { return favorite.title === notFavoriteAnymore });
         if (isFavorite) {
             user.favorites = user.favorites.filter((obj) => { return obj.title !== notFavoriteAnymore });
-            res.status(201).send(`You removed ${notFavoriteAnymore} as a favorite.`);
+            res.status(204);
         } else {
             res.status(404).send(`You don't have ${notFavoriteAnymore} as a favorite.`);
         }
@@ -171,7 +171,7 @@ app.delete('/users/:username', (req, res) => {
     
     if (user) {
         users = users.filter((obj) => { return obj.username !== req.params.username });
-        res.status(201).send('User ' + req.params.username + ' was deleted.');
+        res.status(204);
     } else {
         res.status(404).send(`We couldn\'t find a user with the username ${req.params.username}`);
     }

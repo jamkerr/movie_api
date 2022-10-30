@@ -39,9 +39,15 @@ app.get('/movies', (req, res) => {
 });
 
 // Return a single movie as json
-app.get('/movies/:movieTitle', (req, res) => {
-    res.json(allMovies.find((movie) =>
-    { return movie.title === req.params.movieTitle }));
+app.get('/movies/:moviename', (req, res) => {
+    Movies.findOne({Title: req.params.moviename})
+    .then((movie) => {
+        res.status(201).json(movie);
+    })
+    .catch((err) => {
+        console.err(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
 // Return a genre
@@ -67,8 +73,8 @@ app.get('/users', (req, res) => {
 });
 
 // Return single user by username
-app.get('/users/:Username', (req, res) => {
-    Users.findOne({ Username: req.params.Username })
+app.get('/users/:username', (req, res) => {
+    Users.findOne({ Username: req.params.username })
       .then((user) => {
         res.json(user);
       })
@@ -202,15 +208,18 @@ app.delete('/users/:username/favorites', (req, res) => {
 
 // Delete a user account
 app.delete('/users/:username', (req, res) => {
-    // Find user by username
-    let user = users.find((user) => { return user.username === req.params.username });
-    
-    if (user) {
-        users = users.filter((obj) => { return obj.username !== req.params.username });
-        res.status(204);
-    } else {
-        res.status(404).send(`We couldn\'t find a user with the username ${req.params.username}`);
-    }
+    Users.findOneAndRemove({Username: req.params.username})
+    .then((user) => {
+        if (!user) {
+            res.status(400).send(req.params.username + ' was not found');
+        } else {
+            res.status(200).send(req.params.username + ' was deleted!');
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
 // Catch internal server error

@@ -107,7 +107,7 @@ app.get('/users/:username', (req, res) => {
   Username: String,
   Password: String,
   Email: String,
-  Birth:Date: Date
+  Birth_Date: Date
 }*/
 app.post('/users', (req, res) => {
     Users.findOne({ Username: req.body.Username })
@@ -153,52 +153,19 @@ app.put('/users/:username', (req, res) => {
         res.status(500).send('Error: ' + err);
     });
 });
-        
 
 // Add a favorite movie
-// app.put('/users/:username/favorites', (req, res) => {
-//     // Find user by username
-//     let user = users.find((user) => { return user.username === req.params.username });
-//     let newFavorite = req.body;
-
-
-//     // If user exists and they don't already have the film as a favorite
-//     if (user) {
-//         let isFavorite = user.favorites.find((favorite) => { return favorite.title === newFavorite.title});
-//         if (!isFavorite) {
-//             user.favorites.push(newFavorite);
-//             // res.status(201).send(`You added ${newFavorite.title} as a favorite.`);
-//             res.status(201).send(users);
-//         } else {
-//             res.status(404).send(`You already have ${newFavorite.title} as a favorite.`);
-//         }
-//     } else {
-//         res.status(404).send(`We couldn\'t find a user with the username ${req.params.username}`);
-//     }
-// });
-
-// Add a favorite movie v2
-// app.put('/users/:username/favorites/:moviename', (req, res) => {
-//     Users.findOneAndUpdate(
-//         {Username: req.params.username},
-//         {$push: {FavoriteMovies: Movies.findOne({Title: req.params.moviename})._id}},
-//         {new: true}
-//     )
-//     .then((updatedUser) => {res.status(201).json(updatedUser)})
-//     .catch((err) => {
-//         console.error(err);
-//         res.status(500).send('Error: ' + err);
-//     });
-// });
-
-// Add a favorite movie v3
 app.put('/users/:username/favorites/:moviename', (req, res) => {
-    Users.findOneAndUpdate(
-        {Username: req.params.username},
-        {$push: {FavoriteMovies: Movies.findOne({Title: req.params.moviename}, '_id')}},
-        {new: true}
-    )
-    .then((updatedUser) => {res.status(201).json(updatedUser)})
+    Movies.findOne({Title: req.params.moviename})
+    .then((movie) => {
+        let updatedUser = Users.findOneAndUpdate(
+            {Username: req.params.username},
+            {$push: {FavoriteMovies: movie._id}},
+            {new: true}
+        )
+        return updatedUser;
+    })
+    .then((updatedUser) => {res.status(200).json(updatedUser)})
     .catch((err) => {
         console.error(err);
         res.status(500).send('Error: ' + err);
@@ -206,25 +173,21 @@ app.put('/users/:username/favorites/:moviename', (req, res) => {
 });
 
 // Remove a favorite movie
-app.delete('/users/:username/favorites', (req, res) => {
-    // Find user by username
-    let user = users.find((user) => { return user.username === req.params.username });
-    // Favorite to delete
-    let notFavoriteAnymore = req.body.title;
-
-    // If user exists and they have the film as a favorite
-    if (user) {
-        let isFavorite = user.favorites.find((favorite) => { return favorite.title === notFavoriteAnymore });
-        if (isFavorite) {
-            user.favorites = user.favorites.filter((obj) => { return obj.title !== notFavoriteAnymore });
-            res.status(204);
-        } else {
-            res.status(404).send(`You don't have ${notFavoriteAnymore} as a favorite.`);
-        }
-    } else {
-        res.status(404).send(`We couldn\'t find a user with the username ${req.params.username}`);
-    }
-
+app.delete('/users/:username/favorites/:moviename', (req, res) => {
+    Movies.findOne({Title: req.params.moviename})
+    .then((movie) => {
+        let updatedUser = Users.findOneAndUpdate(
+            {Username: req.params.username},
+            {$pull: {FavoriteMovies: movie._id}},
+            {new: true}
+        )
+        return updatedUser;
+    })
+    .then((updatedUser) => {res.status(200).json(updatedUser)})
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
 // Delete a user account

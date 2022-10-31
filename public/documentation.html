@@ -201,7 +201,7 @@
             </pre>
         </td>
         <td>
-            Returns an object with updated info.
+            Returns an object with updated user info.
             <pre>
                 <code>
 {
@@ -221,39 +221,49 @@
         <td>Add Favorite Movie</td>
         <td>Allow a user to add a movie to their favorites.</td>
         <td>PUT</td>
-        <td>/users/username/favorites</td>
-        <td><code>username</code></td>
-        <td>
-            Requires a JSON object with the key "title".
+        <td>/users/username/favorites/title</td>
+        <td><code>username</code> and <code>title</code> e.g. <code>/users/Gregor/favorites/Eternal%20Sunshine%20of%20the%20Spotless%20Mind</code></td>
+        <td>None</td>
+        <td>Returns an object with updated user info.
             <pre>
                 <code>
 {
-"title":"filmTitle",
-"director":"directorName"
+    "_id": "635fb3bb07d71785cea70518",
+    "Username": "Gregor",
+    "Password": "Pass",
+    "Email": "gregor@itsme.com",
+    "Birth_Date": "1990-01-01T00:00:00.000Z",
+    "FavoriteMovies": [
+    "635d8187928077bdb6b6a8d3"
+    ],
+    "__v": 0
 }
                 </code>
             </pre>
         </td>
-        <td>Returns a confirmation string.</td>
     </tr>
     <tr>
         <td>Remove Favorite Movie</td>
         <td>Allow a user to remove a movie from their favorites.</td>
         <td>DELETE</td>
-        <td>/users/username/favorites</td>
-        <td><code>username</code></td>
-        <td>
-            Requires a JSON object with the key "title".
+        <td>/users/username/favorites/title</td>
+        <td><code>username</code> and <code>title</code> e.g. <code>/users/Gregor/favorites/Eternal%20Sunshine%20of%20the%20Spotless%20Mind</code></td>
+        <td>None</td>
+        <td>Returns an object with updated user info.
             <pre>
                 <code>
 {
-"title":"filmTitle",
-"director":"directorName"
+    "_id": "635fb3bb07d71785cea70518",
+    "Username": "Gregor",
+    "Password": "Pass",
+    "Email": "gregor@itsme.com",
+    "Birth_Date": "1990-01-01T00:00:00.000Z",
+    "FavoriteMovies": [],
+    "__v": 0
 }
                 </code>
             </pre>
         </td>
-        <td>Returns a confirmation string.</td>
     </tr>
     <tr>
         <td>Delete Account</td>

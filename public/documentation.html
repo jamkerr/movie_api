@@ -36,15 +36,37 @@
                 <code>
 [
     {
-        "title": "The Adventures of Priscilla, Queen of the Desert",
-        "director": "Stephan Elliott"
+        "Genre": [
+        "635a53e672d3e15686faf25f"
+        ],
+        "Director": [
+        "635a53e672d3e15686faf264"
+        ],
+        "Actors": [],
+        "_id": "635d8186928077bdb6b6a8cc",
+        "Title": "The Adventures of Priscilla, Queen of the Desert",
+        "Description": "The Adventures of Priscilla, Queen of the Desert is a 1994 Australian road comedy film written and
+        directed by Stephan Elliott. The plot follows two drag queens, played by Hugo Weaving and Guy Pearce, and a transgender
+        woman, played by Terence Stamp, as they journey across the Australian Outback from Sydney to Alice Springs in a tour bus
+        that they have named \"Priscilla\", along the way encountering various groups and individuals.",
+        "Featured": true
     },
     {
-        "title": "Everything Everywhere All at Once",
-        "director": [
-            "Daniel Kwan",
-            "Daniel Scheinert"
-    ]
+        "Genre": [
+        "635a53e672d3e15686faf25f"
+        ],
+        "Director": [
+        "635a53e672d3e15686faf265"
+        ],
+        "Actors": [],
+        "_id": "635d8187928077bdb6b6a8cd",
+        "Title": "Everything Everywhere All at Once",
+        "Description": "Everything Everywhere All at Once is a 2022 American absurdist comedy-drama film written and directed by
+        Daniel Kwan and Daniel Scheinert (collectively known as \"Daniels\"), who produced it with the Russo brothers. The plot
+        centers on a Chinese American immigrant (played by Michelle Yeoh) who, while being audited by the IRS, discovers that
+        she must connect with parallel universe versions of herself to prevent a powerful being from causing the destruction of
+        the multiverse.",
+        "Featured": false
     }
 ]
                 </code>
@@ -56,15 +78,27 @@
         <td>Return a movie by title.</td>
         <td>GET</td>
         <td>/movies/title</td>
-        <td><code>title</code></td>
+        <td><code>title</code> e.g. <code>/movies/The%20Truman%20Show</code></td>
         <td>None</td>
         <td>
             Returns an object.
             <pre>
                 <code>
 {
-"title": "The Truman Show",
-"director": "Peter Weir"
+    "Actors": [],
+    "_id": "635d8187928077bdb6b6a8d2",
+    "Title": "The Truman Show",
+    "Description": "The Truman Show is a 1998 American psychological satirical comedy-drama film directed by Peter Weir,
+    produced by Scott Rudin, Andrew Niccol, Edward S. Feldman, and Adam Schroeder, and written by Niccol. The film stars Jim
+    Carrey as Truman Burbank, a man who grew up living an ordinary life that—unbeknownst to him—takes place on a large set
+    populated by actors for a television show about him.",
+    "Featured": false,
+    "Director": [
+    "635a53e672d3e15686faf269"
+    ],
+    "Genre": [
+    "635a53e672d3e15686faf260"
+    ]
 }
                 </code>
             </pre>
@@ -74,19 +108,44 @@
         <td>Genre</td>
         <td>Return data about a genre.</td>
         <td>GET</td>
-        <td>/genre</td>
-        <td><code>genre</code></td>
+        <td>/genres/genrename</td>
+        <td><code>genrename</code> e.g. <code>/genres/Drama</code></td>
         <td>None</td>
-        <td>Returns a confirmation string.</td>
+        <td>Returns an object.
+            <pre>
+                <code>
+{
+    "_id": "635a53e672d3e15686faf260",
+    "Name": "Drama",
+    "Description": "Drama is a category or genre of narrative fiction (or semi-fiction) intended to be more serious than
+    humorous in tone."
+}
+                </code>
+            </pre>
+        </td>
     </tr>
     <tr>
         <td>Director</td>
         <td>Return data about a director.</td>
         <td>GET</td>
-        <td>/director</td>
-        <td><code>director</code></td>
+        <td>/directors/directorname</td>
+        <td><code>directorname</code> e.g. <code>/directors/Jim%20Sharman</code></td>
         <td>None</td>
-        <td>Returns a confirmation string.</td>
+        <td>Returns an object.
+            <pre>
+                <code>
+{
+    "_id": "635a53e772d3e15686faf26c",
+    "Name": "Jim Sharman",
+    "Bio": "James David Sharman (born 12 March 1945) is an Australian director and writer for film and stage with more than
+    70 productions to his credit. He is renowned in Australia for his work as a theatre director from the 1960s to the
+    present, and is best known internationally as the director of the 1973 theatrical hit The Rocky Horror Show, its film
+    adaptation The Rocky Horror Picture Show (1975) and the film's follow-up, Shock Treatment (1981).",
+    "Birthyear": "1945-01-01T00:00:00.000Z"
+}
+                </code>
+            </pre>
+        </td>
     </tr>
     <tr>
         <td>Register</td>
@@ -95,11 +154,14 @@
         <td>/users</td>
         <td>None</td>
         <td>
-            Requires a JSON object with the key "username".
+            Requires a JSON object with the keys "Username", "Password", "Email", and optionally "Birth_Date".
             <pre>
                 <code>
 {
-"username":"Gregor"
+    "Username":"Gregor",
+    "Password":"Pass",
+    "Email":"gergor@itsme.com",
+    "Birth_Date":"1990-01-01"
 }
                 </code>
             </pre>
@@ -109,75 +171,108 @@
             <pre>
                 <code>
 {
-"username": "Gregor",
-"favorites": []
+    "Username": "Gregor",
+    "Password": "Pass",
+    "Email": "gergor@itsme.com",
+    "Birth_Date": "1990-01-01T00:00:00.000Z",
+    "FavoriteMovies": [],
+    "_id": "635eeb0ecad56f9ee61f9899",
+    "__v": 0
 }
                 </code>
             </pre>
         </td>
     </tr>
     <tr>
-        <td>Update Username</td>
-        <td>Allow a user to update their username.</td>
+        <td>Update User Info</td>
+        <td>Allow a user to update their username, password, email, and birth date. A user can update any combination of these fields while leaving the others unchanged.</td>
         <td>PUT</td>
         <td>/users/username</td>
-        <td><code>username</code></td>
+        <td><code>username</code> e.g. <code>/users/Gregor</code></td>
         <td>
-            Reqires a JSON object with the key "newname".
+            Reqires a JSON object with at least one of the keys "Username", "Password", "Email", or "Birth_Date".
             <pre>
                 <code>
-{"newname":"Hortence"}
+{
+    "Username":"Sol",
+    "Password":"likeasun"
+}
                 </code>
             </pre>
         </td>
-        <td>Returns a confirmation string.</td>
+        <td>
+            Returns an object with updated user info.
+            <pre>
+                <code>
+{
+    "_id": "635fb3bb07d71785cea70518",
+    "Username": "Sol",
+    "Password": "likeasun",
+    "Email": "gergor@itsme.com",
+    "Birth_Date": "1990-01-01T00:00:00.000Z",
+    "FavoriteMovies": [],
+    "__v": 0
+}
+                </code>
+            </pre>
+        </td>
     </tr>
     <tr>
         <td>Add Favorite Movie</td>
         <td>Allow a user to add a movie to their favorites.</td>
         <td>PUT</td>
-        <td>/users/username/favorites</td>
-        <td><code>username</code></td>
-        <td>
-            Requires a JSON object with the key "title".
+        <td>/users/username/favorites/title</td>
+        <td><code>username</code> and <code>title</code> e.g. <code>/users/Gregor/favorites/Eternal%20Sunshine%20of%20the%20Spotless%20Mind</code></td>
+        <td>None</td>
+        <td>Returns an object with updated user info.
             <pre>
                 <code>
 {
-"title":"filmTitle",
-"director":"directorName"
+    "_id": "635fb3bb07d71785cea70518",
+    "Username": "Gregor",
+    "Password": "Pass",
+    "Email": "gregor@itsme.com",
+    "Birth_Date": "1990-01-01T00:00:00.000Z",
+    "FavoriteMovies": [
+    "635d8187928077bdb6b6a8d3"
+    ],
+    "__v": 0
 }
                 </code>
             </pre>
         </td>
-        <td>Returns a confirmation string.</td>
     </tr>
     <tr>
         <td>Remove Favorite Movie</td>
         <td>Allow a user to remove a movie from their favorites.</td>
         <td>DELETE</td>
-        <td>/users/username/favorites</td>
-        <td><code>username</code></td>
-        <td>
-            Requires a JSON object with the key "title".
+        <td>/users/username/favorites/title</td>
+        <td><code>username</code> and <code>title</code> e.g. <code>/users/Gregor/favorites/Eternal%20Sunshine%20of%20the%20Spotless%20Mind</code></td>
+        <td>None</td>
+        <td>Returns an object with updated user info.
             <pre>
                 <code>
 {
-"title":"filmTitle",
-"director":"directorName"
+    "_id": "635fb3bb07d71785cea70518",
+    "Username": "Gregor",
+    "Password": "Pass",
+    "Email": "gregor@itsme.com",
+    "Birth_Date": "1990-01-01T00:00:00.000Z",
+    "FavoriteMovies": [],
+    "__v": 0
 }
                 </code>
             </pre>
         </td>
-        <td>Returns a confirmation string.</td>
     </tr>
     <tr>
         <td>Delete Account</td>
         <td>Allow a user to delete their account.</td>
         <td>DELETE</td>
         <td>/users/username</td>
-        <td><code>username</code></td>
+        <td><code>username</code> e.g. <code>/users/Gregor</code></td>
         <td>None</td>
-        <td>Returns a confirmation string.</td>
+        <td>Returns a confirmation string that the user was deleted.</td>
     </tr>
 </table>
 </body>

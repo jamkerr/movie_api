@@ -52,6 +52,40 @@ app.get('/movies/:moviename', (req, res) => {
     });
 });
 
+// Create movie
+/* JSON format:
+{
+  Title: String,
+  Description: String,
+  Genre: ObjectID,
+  Director: ObjectID
+}*/
+app.post('/movies', (req, res) => {
+    Movies.findOne({ Title: req.body.Title })
+    .then((movie) => {
+      if (movie) {
+        return res.status(400).send(req.body.Title + 'already exists');
+      } else {
+        Movies
+          .create({
+            Title: req.body.Title,
+            Description: req.body.Description,
+            Genre: req.body.Genre,
+            Director: req.body.Director
+          })
+          .then((movie) =>{res.status(201).json(movie) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
 // Return a genre
 app.get('/genres/:genrename', (req, res) => {
     Genres.findOne({Name: req.params.genrename})
@@ -103,7 +137,6 @@ app.get('/users/:username', (req, res) => {
 // Register a new user
 /* JSON format:
 {
-  ID: Integer,
   Username: String,
   Password: String,
   Email: String,
@@ -158,6 +191,7 @@ app.put('/users/:username', (req, res) => {
 app.put('/users/:username/favorites/:moviename', (req, res) => {
     Movies.findOne({Title: req.params.moviename})
     .then((movie) => {
+        if (!movie) return res.status(404).json({ message: "Movie not found" });
         let updatedUser = Users.findOneAndUpdate(
             {Username: req.params.username},
             {$push: {FavoriteMovies: movie._id}},
@@ -176,6 +210,7 @@ app.put('/users/:username/favorites/:moviename', (req, res) => {
 app.delete('/users/:username/favorites/:moviename', (req, res) => {
     Movies.findOne({Title: req.params.moviename})
     .then((movie) => {
+        if (!movie) return res.status(404).json({ message: "Movie not found" });
         let updatedUser = Users.findOneAndUpdate(
             {Username: req.params.username},
             {$pull: {FavoriteMovies: movie._id}},

@@ -135,11 +135,16 @@ app.post('/users', (req, res) => {
     });
 });
 
-// Update a username
+// Update user details
 app.put('/users/:username', (req, res) => {
     Users.findOneAndUpdate(
         {Username: req.params.username},
-        {$set: {Username: req.body.Username}},
+        {$set: {
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birth_Date: req.body.Birth_Date
+        }},
         {new: true}
     )
     .then((updatedUser) => {res.status(201).json(updatedUser)})

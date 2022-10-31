@@ -5,6 +5,8 @@ const express = require('express'),
     Models = require('./models.js');
 
 const app = express();
+const Genres = Models.Genre;
+const Directors = Models.Director;
 const Movies = Models.Movie;
 const Users = Models.User;
 
@@ -51,13 +53,27 @@ app.get('/movies/:moviename', (req, res) => {
 });
 
 // Return a genre
-app.get('/genres/:genreName', (req, res) => {
-    res.send(`Here's info on the film genre "${req.params.genreName}".`);
+app.get('/genres/:genrename', (req, res) => {
+    Genres.findOne({Name: req.params.genrename})
+    .then((genre) => {
+        res.status(201).json(genre);
+    })
+    .catch((err) => {
+        console.err(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
 // Return a director
-app.get('/directors/:directorName', (req, res) => {
-    res.send(`Here's info on the director ${req.params.directorName}.`);
+app.get('/directors/:directorname', (req, res) => {
+    Directors.findOne({Name: req.params.directorname})
+    .then((director) => {
+        res.status(201).json(director);
+    })
+    .catch((err) => {
+        console.err(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
 // Return all users

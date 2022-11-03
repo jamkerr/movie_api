@@ -2,7 +2,9 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     mongoose = require('mongoose'),
-    Models = require('./models.js');
+    Models = require('./models.js'),
+    cors = require('cors'),
+    {check, validationResult} = require('express-validator');
 
 const app = express();
 const Genres = Models.Genre;
@@ -12,6 +14,19 @@ const Users = Models.User;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+let allowedOrigins = ['http://localhost:8080'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      let message = 'The CORS policy for this application doesn\'t allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -64,7 +79,21 @@ app.get('/movies/:moviename', passport.authenticate('jwt', { session: false }), 
   Genre: ObjectID,
   Director: ObjectID
 }*/
-app.post('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.post('/movies',
+  passport.authenticate('jwt', { session: false }),
+  // Validate fields with express-validator
+  [
+    check('Title', 'Title is required.').not().isEmpty(),
+    check('Description is required', 'Username can only contain numbers or letters.').not().isEmpty()
+  ],
+  (req, res) => {
+ 
+    // Check whether express-validator found any errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
     Movies.findOne({ Title: req.body.Title })
     .then((movie) => {
       if (movie) {
@@ -146,34 +175,65 @@ app.get('/users/:username', passport.authenticate('jwt', { session: false }), (r
   Email: String,
   Birth_Date: Date
 }*/
-app.post('/users', (req, res) => {
-    Users.findOne({ Username: req.body.Username })
-    .then((user) => {
-      if (user) {
-        return res.status(400).send(req.body.Username + 'already exists');
-      } else {
-        Users
-          .create({
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-            Birth_Date: req.body.Birth_Date
-          })
-          .then((user) =>{res.status(201).json(user) })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send('Error: ' + error);
+app.post('/users',
+  // Validate fields with express-validator
+  [
+    check('Username', 'Username is required.').not().isEmpty(),
+    check('Username', 'Username can only contain numbers or letters.').isAlphanumeric(),
+    check('Password', 'Password must be at least 8 characters long.').isLength({min:8}),
+    check('Email', 'Email doesn\'t appear to be valid.').isEmail()
+  ],
+  (req, res) => {
+  
+  // Check whether express-validator found any errors
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  Users.findOne({ Username: req.body.Username })
+  .then((user) => {
+    if (user) {
+      return res.status(400).send(req.body.Username + 'already exists');
+    } else {
+      Users
+        .create({
+          Username: req.body.Username,
+          Password: hashedPassword,
+          Email: req.body.Email,
+          Birth_Date: req.body.Birth_Date
         })
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
+        .then((user) =>{res.status(201).json(user) })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      })
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).send('Error: ' + error);
+  });
 });
 
 // Update user details
-app.put('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.put('/users/:username',
+  passport.authenticate('jwt', { session: false }),
+  // Validate fields with express-validator
+  [
+    check('Username', 'Username can only contain numbers or letters.').isAlphanumeric(),
+    check('Password', 'Password must be at least 8 characters long.').isLength({min:8}),
+    check('Email', 'Email doesn\'t appear to be valid.').isEmail()
+  ],
+  (req, res) => {
+
+    // Check whether express-validator found any errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
     Users.findOneAndUpdate(
         {Username: req.params.username},
         {$set: {
@@ -251,6 +311,8 @@ app.use((err, req, res, next) => {
     res.status(500).send('Uh oh spaghetti-o...');
 });
 
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Your app is listening on port' + port);
 });

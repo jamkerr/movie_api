@@ -32,8 +32,8 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-mongoose.connect('mongodb://localhost:27017/YMDB', { useNewUrlParser: true, useUnifiedTopology: true });
-
+// mongoose.connect('mongodb://localhost:27017/YMDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Log requested URL
 app.use(morgan('common'));
@@ -195,7 +195,7 @@ app.post('/users',
   Users.findOne({ Username: req.body.Username })
   .then((user) => {
     if (user) {
-      return res.status(400).send(req.body.Username + 'already exists');
+      return res.status(400).send(req.body.Username + ' already exists');
     } else {
       Users
         .create({

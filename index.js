@@ -15,7 +15,7 @@ const Users = Models.User;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let allowedOrigins = ['http://localhost:8080'];
+let allowedOrigins = ['*'];
 
 app.use(cors({
   origin: (origin, callback) => {

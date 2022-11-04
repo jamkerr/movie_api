@@ -84,7 +84,7 @@ app.post('/movies',
   // Validate fields with express-validator
   [
     check('Title', 'Title is required.').not().isEmpty(),
-    check('Description is required', 'Username can only contain numbers or letters.').not().isEmpty()
+    check('Description', 'Description is required.').not().isEmpty()
   ],
   (req, res) => {
  

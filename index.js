@@ -305,6 +305,22 @@ app.delete('/users/:username', passport.authenticate('jwt', { session: false }),
     });
 });
 
+// Delete a movie
+app.delete('/movies/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.findOneAndRemove({Title: req.params.title})
+  .then((movie) => {
+      if (!movie) {
+          res.status(400).send(req.params.title + ' was not found');
+      } else {
+          res.status(200).send(req.params.title + ' was deleted!');
+      }
+  })
+  .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+  });
+});
+
 // Catch internal server error
 app.use((err, req, res, next) => {
     console.error(err.stack);

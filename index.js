@@ -51,7 +51,7 @@ app.get('/', (req, res) => {
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.find()
     .then((movies) => {
-        res.status(201).json(movies);
+        res.status(200).json(movies);
     })
     .catch((err) => {
         console.err(err);
@@ -63,7 +63,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
 app.get('/movies/:moviename', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({Title: req.params.moviename})
     .then((movie) => {
-        res.status(201).json(movie);
+        res.status(200).json(movie);
     })
     .catch((err) => {
         console.err(err);
@@ -123,7 +123,7 @@ app.post('/movies',
 app.get('/genres/:genrename', passport.authenticate('jwt', { session: false }), (req, res) => {
     Genres.findOne({Name: req.params.genrename})
     .then((genre) => {
-        res.status(201).json(genre);
+        res.status(200).json(genre);
     })
     .catch((err) => {
         console.err(err);
@@ -135,7 +135,7 @@ app.get('/genres/:genrename', passport.authenticate('jwt', { session: false }), 
 app.get('/directors/:directorname', passport.authenticate('jwt', { session: false }), (req, res) => {
     Directors.findOne({Name: req.params.directorname})
     .then((director) => {
-        res.status(201).json(director);
+        res.status(200).json(director);
     })
     .catch((err) => {
         console.err(err);
@@ -147,7 +147,7 @@ app.get('/directors/:directorname', passport.authenticate('jwt', { session: fals
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.find()
     .then((users) => {
-        res.status(201).json(users);
+        res.status(200).json(users);
     })
     .catch((err) => {
         console.err(err);
@@ -159,7 +159,7 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 app.get('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOne({ Username: req.params.username })
       .then((user) => {
-        res.json(user);
+        res.status(200).res.json(user);
       })
       .catch((err) => {
         console.error(err);
@@ -204,7 +204,10 @@ app.post('/users',
           Email: req.body.Email,
           Birth_Date: req.body.Birth_Date
         })
-        .then((user) =>{res.status(201).json({Password, ...user}) })
+        .then((user) =>{
+          //let {Password, ...userOmitPW} = user;
+          res.status(201).json(user);
+        })
       .catch((error) => {
         console.error(error);
         res.status(500).send('Error: ' + error);
@@ -263,7 +266,7 @@ app.put('/users/:username/favorites/:moviename', passport.authenticate('jwt', { 
         )
         return updatedUser;
     })
-    .then((updatedUser) => {res.status(200).json(updatedUser)})
+    .then((updatedUser) => {res.status(201).json(updatedUser)})
     .catch((err) => {
         console.error(err);
         res.status(500).send('Error: ' + err);
@@ -282,7 +285,7 @@ app.delete('/users/:username/favorites/:moviename', passport.authenticate('jwt',
         )
         return updatedUser;
     })
-    .then((updatedUser) => {res.status(200).json(updatedUser)})
+    .then((updatedUser) => {res.status(201).json(updatedUser)})
     .catch((err) => {
         console.error(err);
         res.status(500).send('Error: ' + err);

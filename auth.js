@@ -19,14 +19,12 @@ module.exports = (router) => {
         passport.authenticate('local', {session:false}, (error, user, info) => {
             if (error) {
                 return res.status(400).json({
-                    message: 'Something isn\'t right. Make sure you\'ve included a username and password to sign in.',
-                    user: user
+                    message: 'Something isn\'t right.',
                 });
             }
             if (!user) {
                 return res.status(404).json({
-                    message: 'That user doesn\'t exist.',
-                    user: user
+                    message: 'Make sure you\'ve included a valid username and password to sign in.',
                 });
             }            
             req.login(user, {session:false}, (error) => {

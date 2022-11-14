@@ -32,8 +32,8 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-// mongoose.connect('mongodb://localhost:27017/YMDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/YMDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Log requested URL
 app.use(morgan('common'));
@@ -205,18 +205,16 @@ app.post('/users',
           Birth_Date: req.body.Birth_Date
         })
         .then((user) =>{
-          //let {Password, ...userOmitPW} = user;
-          res.status(201).json(user);
+          let response = {"message": `Successfully created account for ${user.Username}`};
+          res.status(201).json(response);
         })
       .catch((error) => {
-        console.error(error);
-        res.status(500).send('Error: ' + error);
+        res.status(500).json({"message": `The following error occurred: ${error}`});
       })
     }
   })
   .catch((error) => {
-    console.error(error);
-    res.status(500).send('Error: ' + error);
+    res.status(500).json({"message": `The following error occurred: ${error}`});
   });
 });
 
@@ -247,10 +245,13 @@ app.put('/users/:username',
         }},
         {new: true}
     )
-    .then((updatedUser) => {res.status(201).json(updatedUser)})
+    .then((updatedUser) => {
+      let response = {"message": `Successfully updated info for ${updatedUser.Username}`};
+      res.status(201).json(response);
+    })
     .catch((err) => {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -269,7 +270,7 @@ app.put('/users/:username/favorites/:moviename', passport.authenticate('jwt', { 
     .then((updatedUser) => {res.status(201).json(updatedUser)})
     .catch((err) => {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -288,7 +289,7 @@ app.delete('/users/:username/favorites/:moviename', passport.authenticate('jwt',
     .then((updatedUser) => {res.status(201).json(updatedUser)})
     .catch((err) => {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -304,7 +305,7 @@ app.delete('/users/:username', passport.authenticate('jwt', { session: false }),
     })
     .catch((err) => {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -320,7 +321,7 @@ app.delete('/movies/:title', passport.authenticate('jwt', { session: false }), (
   })
   .catch((err) => {
       console.error(err);
-      res.status(500).send('Error: ' + err);
+      res.status(500).json({"message": `The following error occurred: ${err}`});
   });
 });
 

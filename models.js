@@ -15,6 +15,7 @@ let genreSchema = mongoose.Schema({
 let movieSchema = mongoose.Schema({
     Title: {type: String, reqired: true},
     Description: {type: String, required: true},
+    ImageURL: {type: String},
     Genre: [{type: mongoose.Schema.Types.ObjectId, ref: 'Genre'}],
     Director: [{type: mongoose.Schema.Types.ObjectId, ref: 'Director'}],
     Actors: [String],

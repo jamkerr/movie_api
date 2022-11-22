@@ -73,11 +73,12 @@ app.get('/movies/:moviename', passport.authenticate('jwt', { session: false }), 
     });
 });
 
-// Create movie
+// Add a new movie
 /* JSON format:
 {
   Title: String,
   Description: String,
+  ImageURL: String,
   Genre: ObjectID,
   Director: ObjectID
 }*/
@@ -86,7 +87,9 @@ app.post('/movies',
   // Validate fields with express-validator
   [
     check('Title', 'Title is required.').not().isEmpty(),
-    check('Description', 'Description is required.').not().isEmpty()
+    check('Description', 'Description is required.').not().isEmpty(),
+    check('ImageURL', 'Image URL needs to be a string.').isString(),
+    check('Featured', 'Featured can only be true or false.').isBoolean()
   ],
   (req, res) => {
  
@@ -105,6 +108,7 @@ app.post('/movies',
           .create({
             Title: req.body.Title,
             Description: req.body.Description,
+            ImageURL: req.body.ImageURL,
             Genre: req.body.Genre,
             Director: req.body.Director
           })
@@ -120,6 +124,55 @@ app.post('/movies',
       res.status(500).send('Error: ' + error);
     });
 });
+
+// Update movie details
+/* JSON format:
+{
+  Title: String,
+  Description: String,
+  ImageURL: String,
+  Genre: ObjectID,
+  Director: ObjectID
+}*/
+app.put('/movies/:moviename',
+  passport.authenticate('jwt', { session: false }),
+  // Validate fields with express-validator
+  [
+    check('Title', 'Title needs to be a string.').isString(),
+    check('Description', 'Description needs to be a string.').isString(),
+    check('ImageURL', 'Image URL needs to be a string.').isString(),
+    check('Featured', 'Featured can only be true or false.').isBoolean()
+  ],
+  (req, res) => {
+
+    // Check whether express-validator found any errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    Movies.findOneAndUpdate(
+        {Title: req.params.moviename},
+        {$set: {
+            Title: req.body.Title,
+            Description: req.body.Description,
+            ImageURL: req.body.ImageURL,
+            Genre: req.body.Genre,
+            Director: req.body.Director,
+            Featured: req.body.Featured
+        }},
+        {new: true}
+    )
+    .then((updatedMovie) => {
+      let response = {"message": `Successfully updated info for ${updatedMovie.Title}`};
+      res.status(201).json(response);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
+    });
+});
+
 
 // Return a genre
 app.get('/genres/:genrename', passport.authenticate('jwt', { session: false }), (req, res) => {

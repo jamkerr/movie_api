@@ -88,8 +88,8 @@ app.post('/movies',
   [
     check('Title', 'Title is required.').not().isEmpty(),
     check('Description', 'Description is required.').not().isEmpty(),
-    check('ImageURL', 'Image URL needs to be a string.').isString(),
-    check('Featured', 'Featured can only be true or false.').isBoolean()
+    check('ImageURL', 'Image URL needs to be a string.').optional().isString(),
+    check('Featured', 'Featured can only be true or false.').optional().isBoolean()
   ],
   (req, res) => {
  
@@ -138,10 +138,10 @@ app.put('/movies/:moviename',
   passport.authenticate('jwt', { session: false }),
   // Validate fields with express-validator
   [
-    check('Title', 'Title needs to be a string.').isString(),
-    check('Description', 'Description needs to be a string.').isString(),
-    check('ImageURL', 'Image URL needs to be a string.').isString(),
-    check('Featured', 'Featured can only be true or false.').isBoolean()
+    check('Title', 'Title needs to be a string.').optional().isString(),
+    check('Description', 'Description needs to be a string.').optional().isString(),
+    check('ImageURL', 'Image URL needs to be a string.').optional().isString(),
+    check('Featured', 'Featured can only be true or false.').optional().isBoolean()
   ],
   (req, res) => {
 

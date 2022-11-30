@@ -213,14 +213,14 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 // Return single user by username
 app.get('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOne({ Username: req.params.username })
-      .then((user) => {
-        res.status(200).res.json(user);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  });
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 // Register a new user
 /* JSON format:

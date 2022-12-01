@@ -66,6 +66,8 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
 // Return a single movie as json
 app.get('/movies/:moviename', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({Title: req.params.moviename})
+    .populate('Director')
+    .populate('Genre')
     .then((movie) => {
         res.status(200).json(movie);
     })

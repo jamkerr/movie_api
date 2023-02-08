@@ -15,7 +15,7 @@ const Users = Models.User;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let allowedOrigins = ['http://localhost:1234', 'https://ymdb.netlify.app', 'http://localhost:4200'];
+let allowedOrigins = ['http://localhost:1234', 'https://ymdb.netlify.app', 'http://localhost:4200', 'https://jamkerr.github.io'];
 
 app.use(cors({
   origin: (origin, callback) => {

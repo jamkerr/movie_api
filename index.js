@@ -67,7 +67,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
     })
     .catch((err) => {
         console.err(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -90,7 +90,7 @@ app.get('/movies/:moviename', passport.authenticate('jwt', { session: false }), 
     })
     .catch((err) => {
         console.err(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -132,7 +132,7 @@ app.post('/movies',
     Movies.findOne({ Title: req.body.Title })
     .then((movie) => {
       if (movie) {
-        return res.status(400).send(req.body.Title + ' already exists');
+        return res.status(400).json({"message": `${req.body.Title} already exists`});
       } else {
         Movies
           .create({
@@ -145,13 +145,13 @@ app.post('/movies',
           .then((movie) =>{res.status(201).json(movie) })
         .catch((error) => {
           console.error(error);
-          res.status(500).send('Error: ' + error);
+          res.status(500).json({"message": `The following error occurred: ${err}`});
         })
       }
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send('Error: ' + error);
+      res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -230,7 +230,7 @@ app.get('/genres/:genrename', passport.authenticate('jwt', { session: false }), 
     })
     .catch((err) => {
         console.err(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -251,7 +251,7 @@ app.get('/directors/:directorname', passport.authenticate('jwt', { session: fals
     })
     .catch((err) => {
         console.err(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -272,7 +272,7 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
     })
     .catch((err) => {
         console.err(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -293,7 +293,7 @@ app.get('/users/:username', passport.authenticate('jwt', { session: false }), (r
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send('Error: ' + err);
+      res.status(500).json({"message": `The following error occurred: ${err}`});
     });
 });
 
@@ -333,7 +333,7 @@ app.post('/users',
   Users.findOne({ Username: req.body.Username })
   .then((user) => {
     if (user) {
-      return res.status(400).send(req.body.Username + ' already exists');
+      return res.status(400).json({"message": `${req.body.Username} already exists`});
     } else {
       Users
         .create({
@@ -482,9 +482,9 @@ app.delete('/users/:username', passport.authenticate('jwt', { session: false }),
     Users.findOneAndRemove({Username: req.params.username})
     .then((user) => {
         if (!user) {
-            res.status(400).send(req.params.username + ' was not found');
+            res.status(400).json({"message": `${req.params.username} was not found`});
         } else {
-            res.status(200).send(req.params.username + ' was deleted!');
+            res.status(200).json({"message": `${req.params.username} was successfully deleted!`});
         }
     })
     .catch((err) => {
@@ -508,9 +508,9 @@ app.delete('/movies/:title', passport.authenticate('jwt', { session: false }), (
   Movies.findOneAndRemove({Title: req.params.title})
   .then((movie) => {
       if (!movie) {
-          res.status(400).send(req.params.title + ' was not found');
+          res.status(400).json({"message": `${req.params.title} was not found`});
       } else {
-          res.status(200).send(req.params.title + ' was deleted!');
+          res.status(200).json({"message": `${req.params.title} was successfully deleted!`});
       }
   })
   .catch((err) => {
@@ -522,7 +522,7 @@ app.delete('/movies/:title', passport.authenticate('jwt', { session: false }), (
 // Catch internal server error
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Uh oh spaghetti-o...');
+    res.status(500).json({"message": 'Uh oh spaghetti-o...'});
 });
 
 
